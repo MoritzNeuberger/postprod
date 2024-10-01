@@ -31,7 +31,17 @@ classifiers = [
   "Typing :: Typed",
 ]
 dynamic = ["version"]
-dependencies = []
+dependencies = [
+  "awkward",
+  "numpy",
+  "numba",
+  "json",
+  "tqdm",
+  "uproot",
+  "concurrent",
+  "argparse",
+  "h5py"
+]
 
 [project.optional-dependencies]
 test = [

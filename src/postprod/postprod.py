@@ -17,5 +17,3 @@ if __name__ == "__main__":
     parser.add_argument('input_file')
     args = parser.parse_args()
     main(args.input_file)
-
-#    infile = "/home/ga63zay/atlas_neuberger/L1K_simulations/mage/cosm_sims_mage/ana/L200/prompt/vanilla/postproc_inst.json"
