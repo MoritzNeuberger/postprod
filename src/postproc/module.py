@@ -3,7 +3,7 @@ from __future__ import annotations
 import modules as mod
 
 
-class processor:
+class module:
     def __init__(self, inst):
         self.name = inst["name"]
         self.input = inst["input"]
@@ -23,28 +23,12 @@ class processor:
             return mod.m_sum_energy
         if module == "r90_estimator":
             return mod.m_r90_estimator
+        if module == "coincidence_window":
+            return mod.m_coincidence_window
+        if module == "threshold":
+            return mod.m_threshold
         error_message = f"{module} not defined."
         raise NotImplementedError(error_message)
 
     def run(self, processing_variables):
         self.module(self.para, self.input, self.output, processing_variables)
-
-
-class processor_manager:
-    def __init__(self, inst):
-        self.processor_list = []
-        for p_inst in inst["instr"]:
-            p_inst_local = p_inst.copy()
-            if "para" in p_inst_local:
-                p_inst_local["para"].update(inst["para"])
-            else:
-                p_inst_local["para"] = inst["para"]
-            self.processor_list.append(processor(p_inst_local))
-
-    def run(self, processing_variables, pbar, task_id):
-        for proc in (
-            self.processor_list
-        ):  # tqdm(self.processor_list, desc="Processing", unit="proc"):
-            # tqdm.write(f"Running: {proc.name}")  # Display the name of the current process
-            pbar.set_description(f"{task_id} - {proc.name}")
-            proc.run(processing_variables)
