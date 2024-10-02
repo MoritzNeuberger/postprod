@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 
 [project]
-name = "postprod"
+name = "postproc"
 authors = [
   { name = "Moritz Neuberger", email = "moritz.neuberger@tum.de" },
 ]
@@ -61,15 +61,15 @@ docs = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/MoritzNeuberger/postprod"
-"Bug Tracker" = "https://github.com/MoritzNeuberger/postprod/issues"
-Discussions = "https://github.com/MoritzNeuberger/postprod/discussions"
-Changelog = "https://github.com/MoritzNeuberger/postprod/releases"
+Homepage = "https://github.com/MoritzNeuberger/postproc"
+"Bug Tracker" = "https://github.com/MoritzNeuberger/postproc/issues"
+Discussions = "https://github.com/MoritzNeuberger/postproc/discussions"
+Changelog = "https://github.com/MoritzNeuberger/postproc/releases"
 
 
 [tool.hatch]
 version.source = "vcs"
-build.hooks.vcs.version-file = "src/postprod/_version.py"
+build.hooks.vcs.version-file = "src/postproc/_version.py"
 
 [tool.hatch.envs.default]
 features = ["test"]
@@ -90,7 +90,7 @@ testpaths = [
 
 
 [tool.coverage]
-run.source = ["postprod"]
+run.source = ["postproc"]
 report.exclude_also = [
   '\.\.\.',
   'if typing.TYPE_CHECKING:',
@@ -107,7 +107,7 @@ disallow_untyped_defs = false
 disallow_incomplete_defs = false
 
 [[tool.mypy.overrides]]
-module = "postprod.*"
+module = "postproc.*"
 disallow_untyped_defs = true
 disallow_incomplete_defs = true
 
@@ -145,7 +145,7 @@ ignore = [
 ]
 isort.required-imports = ["from __future__ import annotations"]
 # Uncomment if using a _compat.typing backport
-# typing-modules = ["postprod._compat.typing"]
+# typing-modules = ["postproc._compat.typing"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["T20"]

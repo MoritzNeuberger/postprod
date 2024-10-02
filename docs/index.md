@@ -1,4 +1,4 @@
-# postprod
+# postproc
 
 ```{toctree}
 :maxdepth: 2

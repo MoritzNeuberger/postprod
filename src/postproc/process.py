@@ -1,10 +1,11 @@
+from __future__ import annotations
 
-from processor_manager import processor_manager
-from data_manager import data_manager
 import uproot
+from data_manager import data_manager
+from processor_manager import processor_manager
+
 
 def run_post_proc(args):
-
     try:
         infile = args[0]
         outfile = args[1]
@@ -16,4 +17,4 @@ def run_post_proc(args):
         dm.process_data()
         dm.write_output()
     except uproot.exceptions.KeyInFileError:
-        print("Error in {}. Skip.".format(infile))
+        pass
