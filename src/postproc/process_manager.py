@@ -20,20 +20,16 @@ class process_manager:
         self.mode = inst["para"].get("mode", "")
 
         # Get input files and corresponding output files
-        self.input_files = Path.glob(self.in_folder + "*." + self.in_format)
+        self.input_files = list(Path(self.in_folder).glob("*." + self.in_format))[:2]
         if self.mode != "summarize":
             self.output_files = [
-                infile.replace(self.in_folder, self.out).replace(
-                    self.in_format, ".hdf5"
-                )
+                Path(self.out).joinpath(infile.stem + ".hdf5")
                 for infile in self.input_files
             ]
         else:
-            self.tmp_dir = tempfile.TemporaryDirectory()
+            self.tmp_dir = tempfile.mkdtemp()
             self.output_files = [
-                infile.replace(self.in_folder, self.tmp_dir.name).replace(
-                    self.in_format, ".hdf5"
-                )
+                Path(self.tmp_dir).joinpath(infile.stem + ".hdf5")
                 for infile in self.input_files
             ]
             # self.output_files = self.out
@@ -71,7 +67,7 @@ class process_manager:
         with h5py.File(self.out, "w") as f:
             group = f.create_group("awkward")
             form, length, container = ak.to_buffers(
-                ak.to_packed(ak.from_iter(gen_files())), container=group
+                ak.to_packed(ak.concatenate(ak.from_iter(gen_files()))), container=group
             )
             group.attrs["form"] = form.to_json()
             group.attrs["length"] = length

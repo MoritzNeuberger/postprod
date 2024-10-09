@@ -3,15 +3,15 @@ from __future__ import annotations
 import argparse
 import warnings
 
+import process_manager
 from misc import load_inst
-from process_manager import process_manager
 
 warnings.filterwarnings("ignore")
 
 
 def main(infile):
     inst = load_inst(infile)
-    pm = process_manager(inst, overwrite=False)
+    pm = process_manager.process_manager(inst, overwrite=False)
     pm.run_processes()
 
 

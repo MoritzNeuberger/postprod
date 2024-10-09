@@ -1,9 +1,8 @@
 from __future__ import annotations
 
 import uproot
-
-from postproc.data_manager import data_manager
-from postproc.module_manager import module_manager
+from data_manager import data_manager
+from module_manager import module_manager
 
 
 def run_post_proc(args):

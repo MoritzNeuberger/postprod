@@ -136,6 +136,35 @@ def generate_mask_deadlayer(x, y, z, vol, para):
 
 
 def m_active_volume(para, input, output, pv):
+    """
+    Active Volume module for the postprocessing pipeline.
+
+    Given a condition on the location, the module filters the input data based on the condition.
+
+    Parameters:
+    para (dict): Dictionary containing parameters for the module.
+        - active_threshold (float): Threshold for active volume.
+
+    input (list): List of input parameters in the following order:
+        - t: Name of times array.
+        - edep: Name of energy depositions array.
+        - vol: Name of volumes array.
+        - posx: Name of x positions array.
+        - posy: Name of y positions array.
+        - posz: Name of z positions array.
+
+    output (list): List of output parameters in the following order:
+        - t: Array of times.
+        - edep: Array of energy depositions.
+        - vol: Array of volumes.
+        - posx: Array of x positions.
+        - posy: Array of y positions.
+        - posz: Array of z positions.
+        - vol_red: Array of reduced volumes.
+
+    pv (dict): Dictionary to store the processed values.
+
+    """
     if len(output) > 2:
         in_n = {
             "t": input[0],
@@ -184,10 +213,5 @@ def m_active_volume(para, input, output, pv):
 
         for key in in_n:
             tmp = pv[in_n[key]][mask]
-            mask_tmp = ak.Array(
-                [
-                    [[True for arr3 in arr2 if len(arr3)] for arr2 in arr1]
-                    for arr1 in tmp
-                ]
-            )
+            mask_tmp = ak.Array([[True for arr2 in arr1 if len(arr2)] for arr1 in tmp])
             pv[out_n[key]] = tmp[mask_tmp]

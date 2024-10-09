@@ -37,7 +37,6 @@ class data_manager:
             for batch, report in self.ttree.iterate(
                 step_size=self.inst["para"]["step_size"], report=True
             ):
-                pbar.update(report.stop - report.start)
                 processing_variables = {
                     key: batch[value.rsplit("/")[-1]]
                     for key, value in self.inst["input"]["var"].items()
@@ -45,27 +44,29 @@ class data_manager:
                 self.module_manager.run(processing_variables, pbar, self.task_id)
                 for key in self.output_dict:
                     self.output_dict[key].extend(processing_variables[key])
+                pbar.update(report.stop - report.start)
             self.output_dict = ak.Array(self.output_dict)
             pbar.close()
 
         elif self.infile_format == "hdf5":
             n_entries = len(self.ttree)
             pbar = tqdm(total=n_entries, position=self.task_id)
-            for entry in self.ttree:
-                pbar.update(1)
-                processing_variables = {
-                    key: entry[value]
-                    for key, value in self.inst["input"]["var"].items()
-                }
-                self.module_manager.run(processing_variables, pbar, self.task_id)
-                for key in self.output_dict:
-                    self.output_dict[key].extend(processing_variables[key])
+            # for entry in self.ttree:
+            #    pbar.update(1)
+            processing_variables = {
+                key: self.ttree[value]
+                for key, value in self.inst["input"]["var"].items()
+            }
+            self.module_manager.run(processing_variables, pbar, self.task_id)
+            for key in self.output_dict:
+                self.output_dict[key].extend(processing_variables[key])
             self.output_dict = ak.Array(self.output_dict)
             pbar.close()
 
     def write_output(self):
         with h5py.File(self.outfile, "w") as f:
             group = f.create_group("awkward")
+            # print(ak.to_packed(self.output_dict))
             form, length, container = ak.to_buffers(
                 ak.to_packed(self.output_dict), container=group
             )

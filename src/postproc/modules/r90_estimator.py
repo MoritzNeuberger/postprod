@@ -49,6 +49,24 @@ def calculate_R90(v_edep_hwd, v_posx_hwd, v_posy_hwd, v_posz_hwd):
 
 
 def m_r90_estimator(para, input, output, pv):  # noqa: ARG001
+    """
+    R90 Estimator module for the postprocessing pipeline.
+
+    Parameters:
+    para (dict): Dictionary containing parameters for the module.
+
+    input (list): List of input parameters in the following order:
+        - edep: Name of energy depositions array.
+        - posx: Name of x positions array.
+        - posy: Name of y positions array.
+        - posz: Name of z positions array.
+
+    output (list): List of output parameters in the following order:
+        - r90: R90 estimation.
+
+    pv (dict): Dictionary to store the processed values.
+
+    """
     in_n = {"edep": input[0], "x": input[1], "y": input[2], "z": input[3]}
 
     out_n = {"r90": output[0]}

@@ -8,23 +8,21 @@ def subtract_smallest_time(t_sv, t_all):
     return t_sv - ak.min(t_all, axis=1)
 
 
-def define_windows(t_sub, dT=1e4, t_max=1e8):
+def define_windows(t_sub, dT=1e4):
     t_sub_sort = ak.sort(t_sub, axis=1)
 
     @njit
-    def create_windows(vec, wdl, mtd):
+    def create_windows(vec, wdl):
         output = []
         for x in vec:
             tmp_list = [0]
             for y in x:
-                if y > tmp_list[-1] + wdl and y < mtd:
+                if y > tmp_list[-1] + wdl:
                     tmp_list.append(y)
-            tmp_list.append(mtd)
-            tmp_list.append(1e20)
             output.append(tmp_list)
         return output
 
-    return ak.Array(create_windows(t_sub_sort, dT, t_max))
+    return ak.Array(create_windows(t_sub_sort, dT))
 
 
 def generate_map(t_sub, w_t):
@@ -79,6 +77,35 @@ def generate_all_windowed_hits_for_all_events(mapping, v_in):
 
 
 def m_window(para, input, output, pv):
+    """
+    Windowing module for the postprocessing pipeline.
+
+    Parameters:
+    para (dict): Dictionary containing parameters for the windowing module.
+        - dT (float): Time window duration.
+
+    input (list): List of input parameters in the following order:
+        - t_all: Name of all times array.
+        - t: Name of times array.
+        - edep: Name of energy depositions array.
+        - vol: Name of volumes array.
+        - posx: Name of x positions array.
+        - posy: Name of y positions array.
+        - posz: Name of z positions array.
+
+    output (list): List of output parameters in the following order:
+        - w_t: Array of window times array.
+        - t_sub: Array of subtracted times array.
+        - edep: Array of energy depositions array.
+        - vol: Array of volumes array.
+        - posx: Array of x positions array.
+        - posy: Array of y positions array.
+        - posz: Array of z positions array.
+
+    pv (dict): Dictionary to store the processed values.
+
+    """
+
     in_n = {
         "t_all": input[0],
         "t": input[1],
@@ -100,7 +127,7 @@ def m_window(para, input, output, pv):
     }
 
     t_sub = subtract_smallest_time(pv[in_n["t"]], pv[in_n["t_all"]])
-    w_t = define_windows(t_sub, para["dT"], para["t_max"])
+    w_t = define_windows(t_sub, para["dT"])
     map = generate_map(t_sub, w_t)
 
     pv[out_n["t_sub"]] = generate_all_windowed_hits_for_all_events(map, t_sub)  # t_sub

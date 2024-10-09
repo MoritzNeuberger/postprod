@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import awkward as ak
 import numpy as np
-from numba import njit
 
 
 def generate_mask(vol, group, sensitive_volumes):
@@ -19,7 +18,7 @@ def generate_mask(vol, group, sensitive_volumes):
     return mask > 0
 
 
-@njit
+# @njit
 def get_detector_ids_in_window(v_voln_hw):
     list_indices = []
     for i in range(len(v_voln_hw)):
@@ -28,7 +27,7 @@ def get_detector_ids_in_window(v_voln_hw):
     return list_indices
 
 
-@njit
+# @njit
 def group_window_into_detector_ids(v_voln_hw, v_in):
     list_indices = get_detector_ids_in_window(v_voln_hw)
     output = []
@@ -42,7 +41,7 @@ def group_window_into_detector_ids(v_voln_hw, v_in):
 
 
 def group_all_in_detector_ids(v_voln_hw, v_in):
-    @njit
+    # @njit
     def _internal(v_voln_hw, v_in):
         output = []
         for i in range(len(v_voln_hw)):
@@ -56,6 +55,27 @@ def group_all_in_detector_ids(v_voln_hw, v_in):
 
 
 def m_group_sensitive_volume(para, input, output, pv):
+    """
+    Group Sensitive Volume module for the postprocessing pipeline.
+
+    Groups the input data into sensitive volumes according to the vol array.
+    A dimension is added to the output arrays for each group.
+
+    Parameters:
+    para (dict): Dictionary containing parameters for the module.
+        - threshold (float): Energy threshold for grouping.
+
+    input (list): List of input parameters in the following order:
+        - edep: Name of energy depositions array.
+        - vol: Name of volumes array.
+
+    output (list): List of output parameters in the following order:
+        - grouped_edep: Array of grouped energy depositions.
+        - grouped_vol: Array of grouped volumes.
+
+    pv (dict): Dictionary to store the processed values.
+
+    """
     in_n = {
         "t": input[0],
         "edep": input[1],
